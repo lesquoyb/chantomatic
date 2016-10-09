@@ -1,0 +1,104 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\author{Baptiste Lesquoy}
+\title{Apprentissage numérique TP3}
+\begin{document}
+\maketitle
+\part*{Le Chantomatic}
+\section*{Question 1}
+Pour la phrase:
+ \begin{verbatim}
+ bonjour comment ca va bonjour ca va salut ca va bien salut comment ca 
+ va bonjour
+ \end{verbatim} 
+la matrice de transition obtenue est:
+\begin{verbatim}
+{
+	'COMMENT': {'CA': 1.0}, 
+	'VA': {'BONJOUR': 0.5, 'SALUT': 0.25, 'BIEN': 0.25}, 
+	'CA': {'VA': 1.0}, 
+	'.': {'BONJOUR': 1.0}, 
+	'BIEN': {'SALUT': 1.0}, 
+	'BONJOUR': {'COMMENT': 0.3333333333333333, 'CA': 0.3333333333333333, 
+				'.': 0.3333333333333333}, 
+	'SALUT': {'COMMENT': 0.5, 'CA': 0.5}
+}
+\end{verbatim}
+
+ce qui semble cohérent.
+\section*{Question 2}
+	voir main.py la fonction "getTransitionMatrix"
+
+\section*{Question 3}
+la probabilité que le texte émis soit "bonjour ca va" s'exprime avec la formule:\\
+$P(st-3=bonjour,st-2=ca, st-1=va, st=salut /st-3=bonjour) = P(st-2=ca, st-1=va, st=salut /st-2=bonjour)$\\
+$P(st-2=ca, st-1=va, st=salut /st-2=bonjour) = P(st-1=ca/st-2=bonjour)*P(st=va/st-1=ca) $\\
+$P(st-2=ca, st-1=va, st=salut /st-2=bonjour) = 0.3333333333333333 * 1 * \frac{1}{4}$\\
+$P(st-2=ca, st-1=va, st=salut /st-2=bonjour) = 0.0833333333333333 $\\
+
+\section*{Question 4}
+La fonction se nomme "sentenceProbability", le premier paramètre est la phrase que l'on veut tester, le second -un booléen- est la connaissance ou non du premier mot.\\
+On vérifie en calculant la probabilité de la phrase de la question 2: et on obtient 0.08333333333333333, c'est à dire la même réponse que celle proposée à la question 2.
+
+\section*{Question 5}
+À l'aide du programme on obtient: 0.00018511662347278786. Vérifions à la main:\\
+$P(st-3=oh, st-2=i, st-1=asked, st=you /st-3=oh) = P(st-2=i, st-1=asked, st=you /st-3=oh) $\\
+$P(st-2=i, st-1=asked, st=you /st-3=oh) = P(st-2=i/st-3=oh) * P(st-1=asked/st-2=i)*P(st=you/st-1=asked) $\\
+$P(st-2=i, st-1=asked, st=you /st-3=oh) = 0.05405405405405406 *  0.003424657534246575 *1 $\\
+$P(st-2=i, st-1=asked, st=you /st-3=oh) = 0.00018511662347279 $\\
+On obtient le même résultat à un arrondis près.
+
+
+\section*{Question 6}
+TODO: voir musicGen
+
+\part{Tracking dans labyrinthe}
+\section*{Question 7}
+L'espace d'état de la chaine de markov correspond à l'ensemble des couples de cases accessibles et de la direction par laquelle on peut y accède.
+On peut représenter une case par sa coordonnée en x et en y et la direction par Nord, Sud Est et Ouest comme on est en 2D (et qu'apparemment on ne se déplace pas en diagonal).
+
+\section*{Question 8}
+Disons que la case centrale est représentée par $c_{0 0}$, alors l'état $s0=(c_{0, 0}, Ouest)$. Les deux cases atteignable depuis s0 sont $c_{0, 1}$, (la case au Nord) et $c_{0,-1}$(celle au Sud). On obtient donc la distribution suivante:\\
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+$S_{t+1}$ & Probabilité \\
+\hline
+$(c_{0, 1}, Sud)$ & 0.5 \\
+\hline
+$(c_{0,-1}, Nord)$ & 0.5 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{$P(S_{t+1}/S_t=(c_{0,0},Ouest)$}
+\end{table}
+
+\section*{Question 9}
+Si on garde la même notation que tout à l'heure on a la distribution suivante:\\
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+$S_{t+1}$ & Probabilité \\
+\hline
+$(c_{0, 1}, Sud)$ & 0.5 \\
+\hline
+$(c_{-1,0}, Est)$ & 0.5 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{$P(S_{t+1}/S_t=(c_{0,0},Sud)$}
+\end{table}
+
+\section*{Question 10}
+Les deux distributions sont différentes car s0 est différent, en effet, comme on ne peut pas revenir en arrière, la direction d'où on vient influence pour la même case la distribution pour l'état suivant, puisque les cases accessibles ne sont plus les mêmes.
+\end{document}
